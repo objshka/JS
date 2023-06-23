@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("select distinct u from User u join fetch u.roles where u.username = :username")
+    @Query("select u from User u join fetch u.roles where u.username = :username")
     User findByUsername(@Param("username") String username);
 
     @Override
