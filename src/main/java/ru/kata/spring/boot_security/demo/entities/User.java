@@ -40,7 +40,6 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
