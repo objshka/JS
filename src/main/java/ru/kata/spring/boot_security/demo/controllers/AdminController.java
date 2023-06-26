@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,34 +25,39 @@ public class AdminController {
     }
 
     @GetMapping
-    public String showAdminPage(Model model, Principal principal) {
-        User user = userService.getUserByUsername(principal.getName());
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("user", user);
+    public String showAllUsers(Model model, Principal principal) {
+        model.addAttribute("allUsers", userService.getAllUsers());
+        User princ = userService.getUserByUsername(principal.getName());
+        model.addAttribute("princ", princ);
+        model.addAttribute("newUser", new User());
         model.addAttribute("allRoles", roleService.getAllRoles());
         return "admin";
     }
 
     @GetMapping("/{id}")
-    public String showUserById(@PathVariable("id") Long id, Model model) {
+    public String showUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
         return "user";
     }
 
-    @GetMapping("/addNewUser")
+    @GetMapping("/addUser")
     public String addNewUser(Model model, @ModelAttribute("user") User user) {
         List<Role> roles = roleService.getAllRoles();
         model.addAttribute("rolesAdd", roles);
         return "create_new_user";
     }
 
-    @PostMapping("/createNewUser")
-    public String createNewUser(User user) {
-        userService.saveUser(user);
+    @PostMapping("/user-creation")
+    public String addCreateNewUser(User user) {
+        try {
+            userService.saveUser(user);
+        } catch (Exception er) {
+            System.err.println("Пользователь с таким email уже существует!");
+        }
         return "redirect:/admin";
     }
 
-    @PatchMapping("/updateUser")
+    @PatchMapping("/user-update")
     public String updateUser(User user) {
         try {
             userService.saveUser(user);
@@ -63,14 +67,20 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/updateUser/{id}")
+    @GetMapping("/user-update/{id}")
     public String updateUserForm(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
         return "admin";
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
+    @GetMapping("/delete/{id}")
+    public String deleteUserForm(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.getUserById(id));
+        return "admin";
+    }
+
+    @DeleteMapping("/user-delete")
+    public String deleteUser(Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
