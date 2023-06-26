@@ -3,12 +3,12 @@ package ru.kata.spring.boot_security.demo.entities;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Entity
 @Getter
@@ -78,4 +78,7 @@ public class User implements UserDetails {
         return Objects.hash(id);
     }
 
+    public String getUserRole() {
+        return roles.stream().map(Object::toString).collect(Collectors.joining(", "));
+    }
 }
