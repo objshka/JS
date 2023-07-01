@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,23 +14,18 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "role")
     private String role;
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
 
-    public Role(Long id, String role) {
+
+    public Role(Long id) {
         this.id = id;
-        this.role = role;
-    }
-
-    public Role() {
     }
 
     @Override
